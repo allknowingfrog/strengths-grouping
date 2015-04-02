@@ -3,25 +3,65 @@ import csv
 
 teamsCount = 2
 
-scores = {}
+people = {}
 with open('strengths.csv') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
-        scores[row['Name']] = {}
-        scores[row['Name']]['strengths'] = {}
-        scores[row['Name']]['strengths']['a'] = int(row['A'])
-        scores[row['Name']]['strengths']['b'] = int(row['B'])
-        scores[row['Name']]['strengths']['c'] = int(row['C'])
+        people[row['Name']] = {}
+        people[row['Name']]['a'] = int(row['A'])
+        people[row['Name']]['b'] = int(row['B'])
+        people[row['Name']]['c'] = int(row['C'])
 
-for user in scores:
-    total = 0
-    strengths = scores[user]['strengths']
-    for s in strengths:
-        total += strengths[s]
-    scores[user]['total'] = total
+outliers = {
+    'a': {
+        'high': {
+            'person': '',
+            'score' : 0
+        },
+        'low': {
+            'person': '',
+            'score' : 10
+        }
+    },
+    'b': {
+        'high': {
+            'person': '',
+            'score' : 0
+        },
+        'low': {
+            'person': '',
+            'score' : 10
+        }
+    },
+    'c': {
+        'high': {
+            'person': '',
+            'score' : 0
+        },
+        'low': {
+            'person': '',
+            'score' : 10
+        }
+    }
+}
+for p in people:
+    for s in people[p]:
+        score = people[p][s]
+        if score > outliers[s]['high']['score']:
+            outliers[s]['high']['score'] = score
+            outliers[s]['high']['person'] = p
+        elif score < outliers[s]['low']['score']:
+            outliers[s]['low']['score'] = score
+            outliers[s]['low']['person'] = p
 
-for user in scores:
-    print(user, scores[user]['total'])
+for s in outliers:
+    print(
+        s, 
+        outliers[s]['high']['person'], 
+        outliers[s]['high']['score'], 
+        outliers[s]['low']['person'], 
+        outliers[s]['low']['score']
+    )
 
 teams = []
 for i in range(0, teamsCount):
